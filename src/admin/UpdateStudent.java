@@ -40,8 +40,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdatepicker.impl.JDatePickerImpl;
+
 import ConnectionPackage.Connector;
 import Method.Method;
+import Method.Validation;
+
+import java.awt.Dialog.ModalityType;
+import java.awt.SystemColor;
 
 public class UpdateStudent extends JDialog {
 
@@ -49,82 +55,86 @@ public class UpdateStudent extends JDialog {
 	 * Launch the application.
 	 */
 	static String  Filename=null;
+	String dobInput;
 	InputStream input;
 	byte [] image=null;
 	private JTextField nameInput;
 	private JTextField fatInput;
 	private JTextField pinInput;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UpdateStudent dialog = new UpdateStudent(null,null);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JTextField mobileInput;
 
 	/**
 	 * Create the dialog.
 	 */
 	public UpdateStudent(DefaultTableModel model,JTable table) {
+		setModalityType(ModalityType.TOOLKIT_MODAL);
+		setModal(true);
 		
 		setBounds(250, 0, 550, 700);
 		getContentPane().setLayout(null);
 		
-		JLabel profile = new JLabel("");
-		profile.setBounds(364, 47, 148, 168);
-		profile.setBorder(new LineBorder(Color.gray,2));
-		getContentPane().add(profile);
 		Method method=new Method();
+		JLabel Background = new JLabel("");
+		Background.setBounds(0, 0, 534, 661);
+		getContentPane().add(Background);
+		ImageIcon icon2=new ImageIcon(".//asset//uperBack.jpg");
+		method.resizeImage(icon2, 534, 661, Background);
+		
+		JLabel profile = new JLabel("");
+		profile.setBounds(386, 83, 101, 111);
+		profile.setBorder(new LineBorder(Color.gray,2));
+		Background.add(profile);
+		
+		
+		
 		JButton chooseButton = new JButton("choose");
+		chooseButton.setBackground(SystemColor.activeCaption);
 		chooseButton.setBounds(398, 227, 89, 23);
-		getContentPane().add(chooseButton);
+		Background.add(chooseButton);
 		
 		
 		
 		JLabel nameLabel = new JLabel("Student Name");
+		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		nameLabel.setBounds(10, 64, 89, 28);
-		getContentPane().add(nameLabel);
+		Background.add(nameLabel);
 		
 		nameInput = new JTextField();
 		nameInput.setBounds(109, 68, 223, 23);
-		getContentPane().add(nameInput);
+		Background.add(nameInput);
 		nameInput.setColumns(10);
 		
 		JLabel fatName = new JLabel("Father's Name");
+		fatName.setForeground(Color.WHITE);
 		fatName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		fatName.setBounds(10, 116, 89, 28);
-		getContentPane().add(fatName);
+		Background.add(fatName);
 		
 		fatInput = new JTextField();
 		fatInput.setColumns(10);
 		fatInput.setBounds(109, 121, 223, 23);
-		getContentPane().add(fatInput);
+		Background.add(fatInput);
 		
 		JLabel genderLabel = new JLabel("Gender");
+		genderLabel.setForeground(Color.WHITE);
 		genderLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		genderLabel.setBounds(10, 175, 60, 28);
-		getContentPane().add(genderLabel);
+		Background.add(genderLabel);
 		
 		JRadioButton radioButton = new JRadioButton("Male");
 		radioButton.setBounds(109, 179, 53, 23);
 		radioButton.setActionCommand("Male");
-		getContentPane().add(radioButton);
+		Background.add(radioButton);
 		
 		JRadioButton rdbtnFemale = new JRadioButton("Female");
 		rdbtnFemale.setBounds(188, 179, 72, 23);
 		rdbtnFemale.setActionCommand("Female");
-		getContentPane().add(rdbtnFemale);
+		Background.add(rdbtnFemale);
 		JRadioButton rdbtnOther = new JRadioButton("Other");
 		rdbtnOther.setBounds(272, 179, 60, 23);
 		rdbtnOther.setActionCommand("Other");
-		getContentPane().add(rdbtnOther);
+		Background.add(rdbtnOther);
 		
 		ButtonGroup group=new ButtonGroup();
 		group.add(rdbtnFemale);
@@ -132,56 +142,59 @@ public class UpdateStudent extends JDialog {
 		group.add(rdbtnOther);
 		
 		JLabel lblAddress = new JLabel("Address");
+		lblAddress.setForeground(Color.WHITE);
 		lblAddress.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblAddress.setBounds(10, 231, 78, 28);
-		getContentPane().add(lblAddress);
+		Background.add(lblAddress);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(109, 215, 232, 84);
-		getContentPane().add(scrollPane);
+		Background.add(scrollPane);
 		
 		JTextArea addressInput = new JTextArea();
 		scrollPane.setViewportView(addressInput);
 		
 		JLabel lblPincode = new JLabel("Pincode");
+		lblPincode.setForeground(Color.WHITE);
 		lblPincode.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblPincode.setBounds(10, 331, 78, 28);
-		getContentPane().add(lblPincode);
+		Background.add(lblPincode);
 		
 		pinInput = new JTextField();
 		pinInput.setColumns(10);
 		pinInput.setBounds(109, 335, 223, 23);
-		getContentPane().add(pinInput);
+		Background.add(pinInput);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth");
+		lblDateOfBirth.setForeground(Color.WHITE);
 		lblDateOfBirth.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblDateOfBirth.setBounds(10, 392, 78, 28);
-		getContentPane().add(lblDateOfBirth);
+		Background.add(lblDateOfBirth);
 		
-		JSpinner day = new JSpinner();
-		day.setModel(new SpinnerNumberModel(1, 1, 31, 1));
-		day.setBounds(127, 397, 44, 23);
-		getContentPane().add(day);
+		JDatePickerImpl datePicker=Method.datePicker();
+		datePicker.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dobInput=datePicker.getJFormattedTextField().getText();
+			}
+		});
+		datePicker.setBounds(127,397,200,23);
+		Background.add(datePicker);
 		
-		JSpinner month = new JSpinner();
-		month.setModel(new SpinnerNumberModel(1, 1, 12, 1));
-		month.setBounds(188, 397, 44, 23);
-		getContentPane().add(month);
-		
-		JSpinner year = new JSpinner();
-		year.setModel(new SpinnerNumberModel(new Long(1990), new Long(1990), new Long(2022), new Long(1)));
-		year.setBounds(253, 397, 79, 23);
-		getContentPane().add(year);
+		mobileInput = new JTextField();
+		mobileInput.setColumns(10);
+		mobileInput.setBounds(109, 436, 223, 23);
+		Background.add(mobileInput);
 		
 		ArrayList<String> list=new ArrayList<String>();
 		if(table!=null && model!=null) {
 			int rowIndex=table.getSelectedRow();
-			String name=model.getValueAt(rowIndex, 1).toString();
-			String fatname=model.getValueAt(rowIndex, 2).toString();
-			String Gender=model.getValueAt(rowIndex, 3).toString();
-			String Address=model.getValueAt(rowIndex, 4).toString();
-			String Pin=model.getValueAt(rowIndex, 5).toString();
-			String dob=model.getValueAt(rowIndex, 6).toString();
+			String name=model.getValueAt(rowIndex, 2).toString();
+			String fatname=model.getValueAt(rowIndex, 3).toString();
+			String Gender=model.getValueAt(rowIndex, 4).toString();
+			String Address=model.getValueAt(rowIndex, 5).toString();
+			String Pin=model.getValueAt(rowIndex, 6).toString();
+			String dob=model.getValueAt(rowIndex, 7).toString();
+			mobileInput.setText(model.getValueAt(rowIndex, 9).toString());
 			nameInput.setText(name);
 			fatInput.setText(fatname);
 			if(Gender.equals("Male")) {
@@ -191,10 +204,8 @@ public class UpdateStudent extends JDialog {
 			}else {
 				rdbtnOther.setSelected(true);
 			}
-			String [] str=dob.split("/");
-			day.setValue(Integer.parseInt(str[0]));
-			month.setValue(Integer.parseInt(str[1]));
-			year.setValue(Integer.parseInt(str[2]));
+			datePicker.getJFormattedTextField().setText(dob);
+			
 			addressInput.setText(Address);
 			pinInput.setText(Pin);
 			InputStream bl = null;
@@ -208,7 +219,7 @@ public class UpdateStudent extends JDialog {
 				ps.setInt(1,serial);
 				ResultSet rs=ps.executeQuery();
 				if(rs.next()) {
-					Blob b=rs.getBlob(11);
+					Blob b=rs.getBlob(12);
 					InputStream is=b.getBinaryStream();
 					Image image=ImageIO.read(is);
 					icon=new ImageIcon(image);
@@ -218,14 +229,6 @@ public class UpdateStudent extends JDialog {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			try {
-			
-				
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
 			
 		}
 		try {
@@ -247,17 +250,27 @@ public class UpdateStudent extends JDialog {
 		String departmentInput="";
 		
 		JButton submitButton = new JButton("SUBMIT");
+		submitButton.setBackground(SystemColor.activeCaption);
 		submitButton.setBounds(109, 486, 89, 23);
-		getContentPane().add(submitButton);
+		Background.add(submitButton);
 		
 		JButton resetButton = new JButton("RESET");
+		resetButton.setBackground(SystemColor.activeCaption);
 		
 		resetButton.setBounds(237, 486, 89, 23);
-		getContentPane().add(resetButton);
+		Background.add(resetButton);
+		
+		JLabel lblMobile = new JLabel("Mobile");
+		lblMobile.setForeground(Color.WHITE);
+		lblMobile.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblMobile.setBounds(10, 431, 78, 28);
+		Background.add(lblMobile);
+		
+		
 		
 		System.out.print(departmentInput);
 		
-		String dobInput=day.getValue().toString()+"/"+month.getValue().toString()+"/"+year.getValue().toString();
+//		String dobInput=day.getValue().toString()+"/"+month.getValue().toString()+"/"+year.getValue().toString();
 //		System.out.println(dobInput);
 		chooseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -280,6 +293,13 @@ public class UpdateStudent extends JDialog {
 		});
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(group.isSelected(null)) {
+					JOptionPane.showMessageDialog(null, "Select gender","error",JOptionPane.ERROR_MESSAGE);
+//					System.out.println("hello");
+				}else if(Validation.studentValidation(nameInput.getText(),fatInput.getText(),addressInput.getText(),pinInput.getText(),mobileInput.getText(),"nejarulislam45@gmail.com")==true){
+
+				
+				
 				if(Filename !=null) {
 					try {
 						Connection con=Connector.connect();
@@ -293,8 +313,7 @@ public class UpdateStudent extends JDialog {
 						ps.setString(3, group.getSelection().getActionCommand());
 						ps.setString(4,addressInput.getText() );
 						ps.setString(5, pinInput.getText());
-						String dob=day.getValue().toString()+"/"+month.getValue().toString()+"/"+year.getValue().toString();
-						ps.setString(6, dob);
+						ps.setString(6, datePicker.getJFormattedTextField().getText());
 						ps.setBlob(7, in);
 						int Row=table.getSelectedRow();
 						ps.setInt(8,Integer.parseInt(model.getValueAt(Row, 0).toString()));
@@ -325,8 +344,7 @@ public class UpdateStudent extends JDialog {
 						ps.setString(3, group.getSelection().getActionCommand());
 						ps.setString(4,addressInput.getText() );
 						ps.setString(5, pinInput.getText());
-						String dob=day.getValue().toString()+"/"+month.getValue().toString()+"/"+year.getValue().toString();
-						ps.setString(6, dob);
+						ps.setString(6, datePicker.getJFormattedTextField().getText());
 						int Row=table.getSelectedRow();
 						ps.setInt(7,Integer.parseInt(model.getValueAt(Row, 0).toString()));
 						ps.executeUpdate();
@@ -343,7 +361,8 @@ public class UpdateStudent extends JDialog {
 				}
 
 				}
-								}
+			}
+			}
 		});
 		
 		resetButton.addActionListener(new ActionListener() {

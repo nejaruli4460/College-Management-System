@@ -1,6 +1,7 @@
 package Login;
 import java.awt.EventQueue;
 import ConnectionPackage.*;
+import Method.Method;
 import Method.Progress;
 
 import javax.swing.JFrame;
@@ -23,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -31,6 +33,8 @@ import student.StudentMain;
 import admin.adminMain;
 import faculty.FacultyMain;
 import javax.swing.JProgressBar;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 @SuppressWarnings("serial")
 public class LoginPage extends JFrame {
 //	Connection con;
@@ -39,9 +43,10 @@ public class LoginPage extends JFrame {
 	JPanel facultyPanel;
 	JPanel loginMainPanel;
 	JPanel adminPanel;
+	public static JLabel Loading;
 
 	/**
-	 * Coded BY---Nejarul Islam
+	 *Coded BY---Nejarul Islam
 	 *B.sc Computer Science(Honours)
 	 *Surendranath College
 	 *Batch 2022
@@ -50,7 +55,7 @@ public class LoginPage extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LoginPage frame = new LoginPage();
+					LoginPage frame = new LoginPage("student");
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 				} catch (Exception e) {
@@ -63,7 +68,7 @@ public class LoginPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public LoginPage() {
+	public LoginPage(String loginFlag) {
 		//Background Code for Jframe started-------
 		setIconImage(Toolkit.getDefaultToolkit().getImage(".\\asset\\logo.jpg"));
 		setForeground(SystemColor.activeCaption);
@@ -76,6 +81,9 @@ public class LoginPage extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setExtendedState(this.getExtendedState()|JFrame.MAXIMIZED_BOTH);///code for auto maximized
+		
+		
+
 		//Logo and surendranath college naming panel started from here------------------------------
 		
 		JPanel logoPanel = new JPanel();
@@ -98,9 +106,11 @@ public class LoginPage extends JFrame {
 		logoPanel.add(collegeNaming);
 		//Code for Background set----------
 		JLabel Background = new JLabel("");
-		Background.setIcon(new ImageIcon(".\\asset\\background.jpg"));
+		ImageIcon icon=new ImageIcon(".\\asset\\panelBack.jpg");
 		Background.setBounds(0, 0, 1400, 830);
 		contentPane.add(Background);///upto here background set code
+		Method method=new Method();
+		method.resizeImage(icon, 1440, 830, Background);
 		//Login Panel started here __________________________________________________________
 		loginMainPanel = new JPanel();
 		Background.add(loginMainPanel);
@@ -115,7 +125,7 @@ public class LoginPage extends JFrame {
 		
 		//student button code------------
 				JButton studentButton = new JButton("   STUDENT");
-				studentButton.setBackground(Color.cyan);
+				studentButton.setBackground(new Color(135, 206, 235));
 				studentButton.setForeground(Color.BLACK);
 				studentButton.setFont(new Font("Nirmala UI", Font.BOLD, 15));
 				studentButton.setBounds(32, 11, 132, 31);
@@ -171,6 +181,13 @@ public class LoginPage extends JFrame {
 					}
 				});
 				loginMainPanel.add(adminButton);
+				
+//				Loading = new JLabel("Please Wait . . . .");
+//				Loading.setForeground(new Color(0, 128, 128));
+//				Loading.setFont(new Font("Lucida Console", Font.PLAIN, 39));
+//				Loading.setBounds(472, 196, 387, 36);
+//				Background.add(Loading);
+//				Loading.setVisible(false);
 				studentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				LoginMainPanel.add(studentPanel);
@@ -187,10 +204,24 @@ public class LoginPage extends JFrame {
 				
 			}
 		});
+				if(loginFlag.equals("student")) {
+					studentButton.setBackground(Color.cyan);
+					studentPanel.setVisible(true);
+				}else if(loginFlag.equals("faculty")) {
+					facultyButton.setBackground(Color.cyan);
+					studentPanel.setVisible(false);
+					facultyPanel.setVisible(true);
+					
+				}else {
+					adminButton.setBackground(Color.cyan);
+					studentPanel.setVisible(false);
+					adminPanel.setVisible(true);
+				}
 				
 		
 	}
 	public JPanel Student() {
+		
 		studentPanel = new JPanel();
 		studentPanel.setBackground(Color.WHITE);
 		loginMainPanel.add(studentPanel);
@@ -218,6 +249,12 @@ public class LoginPage extends JFrame {
 		studentPanel.add(usernameLabel);
 		
 		JTextField textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				textField.setText(textField.getText().toUpperCase());
+			}
+		});
 		textField.setBounds(137, 204, 167, 20);
 		studentPanel.add(textField);
 		textField.setColumns(10);
@@ -258,7 +295,9 @@ public class LoginPage extends JFrame {
 		studentSubmitBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+//					loadingPanel.setVisible(true);
 					loginAuthenication(passwordField,textField,"student");
+					
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -268,7 +307,7 @@ public class LoginPage extends JFrame {
 		return studentPanel;
 	}
 	public JPanel faculty() {
-
+		
 		JPanel facultyPanel = new JPanel();
 		facultyPanel.setLayout(null);
 		facultyPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
@@ -299,6 +338,13 @@ public class LoginPage extends JFrame {
 		textFieldFaculty.setColumns(10);
 		textFieldFaculty.setBounds(137, 204, 167, 20);
 		facultyPanel.add(textFieldFaculty);
+		
+		textFieldFaculty.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				textFieldFaculty.setText(textFieldFaculty.getText().toUpperCase());
+			}
+		});
 		
 		JLabel passwordfLabel = new JLabel("  PASSWORD");
 		passwordfLabel.setFont(new Font("Verdana", Font.PLAIN, 13));
@@ -378,6 +424,13 @@ public class LoginPage extends JFrame {
 		textField.setBounds(137, 204, 167, 20);
 		adminPanel.add(textField);
 		
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				textField.setText(textField.getText().toUpperCase());
+			}
+		});
+		
 		JLabel passwordaLabel = new JLabel("  PASSWORD");
 		passwordaLabel.setFont(new Font("Verdana", Font.PLAIN, 13));
 		passwordaLabel.setBounds(29, 227, 98, 33);
@@ -427,32 +480,42 @@ public class LoginPage extends JFrame {
 	}
 	@SuppressWarnings("deprecation")
 	public void loginAuthenication(JPasswordField pass,JTextField user,String str) throws ClassNotFoundException, SQLException{
-		Pojo p=new Pojo(user.getText(),pass.getText());
-		Dao d=new Dao();
-		String session=d.studentLogin(p);
-//		System.out.println(p);
+
+		
 		if(user.getText().isEmpty() || pass.getText().isEmpty()) {
+//			ls.setVisible(false);
 			JOptionPane.showMessageDialog(contentPane,"Password or Username Field Empty","Wrong",JOptionPane.ERROR_MESSAGE);
 			return;
 		}else {
+//			panel.setVisible(true);
 			
-			if( session!= null) {
-				setVisible(false);
-				StudentMain sm=new StudentMain(session);
+			if( (LoginDao.student(user.getText(),pass.getText())!=0)&&str.equals("student")) {
+				StudentMain sm=new StudentMain((LoginDao.student(user.getText(),pass.getText())),2);
+				
 				sm.setVisible(true);
-				return;
-			}else if(user.getText().equals("faculty") && pass.getText().equals("12345")&&str.equals("faculty")) {
+//				ls.setVisible(false);
+				
+				
 				setVisible(false);
-				FacultyMain fm=new FacultyMain();
+//				ls.setVisible(false);
+				return;
+			}else if((LoginDao.faculty(user.getText(),pass.getText())!=0)&&str.equals("faculty")) {
+//				ls.setVisible(true);
+				FacultyMain fm=new FacultyMain((LoginDao.faculty(user.getText(),pass.getText())),2);
 				fm.setVisible(true);
+//				ls.setVisible(false);
+				setVisible(false);
 				return;
 			}
-			else if(user.getText().equals("admin")&&pass.getText().equals("12345")&&str.equals("admin")) {
-				setVisible(false);
-				adminMain am=new adminMain();
+			else if((LoginDao.admin(user.getText(),pass.getText())!=0)&&str.equals("admin")) {
+//				ls.setVisible(true);
+				adminMain am=new adminMain(LoginDao.admin(user.getText(),pass.getText()),2);
 				am.setVisible(true);
+//				ls.setVisible(false);
+				setVisible(false);
 				return;
 			}else {
+//				ls.setVisible(false);
 				JOptionPane.showMessageDialog(contentPane,"Error Password or Error username","Wrong",JOptionPane.ERROR_MESSAGE);
 				return;
 			}

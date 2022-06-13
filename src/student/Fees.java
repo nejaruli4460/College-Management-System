@@ -6,16 +6,26 @@ import javax.swing.JPanel;
 
 import Method.Method;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.SystemColor;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import ConnectionPackage.Connector;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
 
 public class Fees extends JPanel {
 	private JTable table;
@@ -23,33 +33,47 @@ public class Fees extends JPanel {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField labFees;
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
-	private JTextField textField_9;
+	private JTextField tutionFees;
 	private JTextField textField_10;
 
 	/**
 	 * Create the panel.
 	 */
-	public Fees() {
+	public Fees(int serial) {
 		setBounds(0,0,1440,883);
 		setLayout(null);
 		setBackground(new Color(0,0,0,80));
 		
+		
 		JLabel feeLabel = new JLabel("ADMISSION FEES PAYMENT");
-		feeLabel.setForeground(Color.GRAY);
+		feeLabel.setBackground(Color.ORANGE);
+		feeLabel.setForeground(Color.WHITE);
 		feeLabel.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 45));
 		feeLabel.setBounds(370, 11, 589, 44);
 		add(feeLabel);
+	
+		JPanel panel1 = new JPanel();
+		panel1.setBounds(125, 120, 944, 470);
+		add(panel1);
+		panel1.setLayout(null);
+		add(panel1);
+		panel1.setVisible(false);
+		
+		JLabel lblNewLabel = new JLabel("Fees Paid For your "+Method.currentSem(serial));
+		lblNewLabel.setFont(new Font("Nirmala UI", Font.PLAIN, 47));
+		lblNewLabel.setBounds(202, 107, 718, 148);
+		panel1.add(lblNewLabel);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(125, 120, 944, 470);
 		add(panel);
 		panel.setLayout(null);
-		
+		panel.setVisible(false);
 		JLabel lblFeesHead = new JLabel("FEES HEAD");
 		lblFeesHead.setForeground(new Color(128, 128, 128));
 		lblFeesHead.setFont(new Font("Arial", Font.BOLD, 19));
@@ -121,6 +145,10 @@ public class Fees extends JPanel {
 		lblTutionFees.setFont(new Font("Arial", Font.PLAIN, 19));
 		lblTutionFees.setBounds(72, 395, 124, 14);
 		panel.add(lblTutionFees);
+////		String comboItem[]= {"SEMESTER 1","SEMESTER 2","SEMESTER 3","SEMESTER 4","SEMESTER 5","SEMESTER 6"};
+//		JComboBox comboBox = new JComboBox(comboItem);
+//		comboBox.setBounds(125, 100, 944, 22);
+//		add(comboBox);
 		
 		textField = new JTextField();
 		textField.setEditable(false);
@@ -150,13 +178,11 @@ public class Fees extends JPanel {
 		textField_3.setBounds(327, 173, 134, 20);
 		panel.add(textField_3);
 		
-		textField_4 = new JTextField();
-		textField_4.setEditable(false);
-		String lab=labFees("CMSG");
-		textField_4.setText(lab);
-		textField_4.setColumns(10);
-		textField_4.setBounds(327, 210, 134, 20);
-		panel.add(textField_4);
+		labFees = new JTextField();
+		labFees.setEditable(false);
+		labFees.setColumns(10);
+		labFees.setBounds(327, 210, 134, 20);
+		panel.add(labFees);
 		
 		textField_5 = new JTextField();
 		textField_5.setEditable(false);
@@ -185,13 +211,11 @@ public class Fees extends JPanel {
 		textField_8.setColumns(10);
 		textField_8.setBounds(327, 358, 134, 20);
 		panel.add(textField_8);
-		String tf=tutionFees("BSC(G)");
-		textField_9 = new JTextField();
-		textField_9.setEditable(false);
-		textField_9.setText(tf);
-		textField_9.setColumns(10);
-		textField_9.setBounds(327, 389, 134, 20);
-		panel.add(textField_9);
+		tutionFees = new JTextField();
+		tutionFees.setEditable(false);
+		tutionFees.setColumns(10);
+		tutionFees.setBounds(327, 389, 134, 20);
+		panel.add(tutionFees);
 		
 		textField_10 = new JTextField();
 		textField_10.setEditable(false);
@@ -200,9 +224,10 @@ public class Fees extends JPanel {
 		textField_10.setColumns(10);
 		
 		JButton totalButton = new JButton("TOTAL CALCULATE");
+		totalButton.setBackground(SystemColor.activeCaption);
 		totalButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int equal=(Integer.parseInt(textField.getText()))+(Integer.parseInt(textField_1.getText()))+(Integer.parseInt(textField_2.getText()))+(Integer.parseInt(textField_3.getText()))+(Integer.parseInt(textField_4.getText()))+(Integer.parseInt(textField_5.getText()))+(Integer.parseInt(textField_6.getText()))+(Integer.parseInt(textField_7.getText()))+(Integer.parseInt(textField_8.getText()))+(Integer.parseInt(textField_9.getText()));
+				int equal=(Integer.parseInt(textField.getText()))+(Integer.parseInt(textField_1.getText()))+(Integer.parseInt(textField_2.getText()))+(Integer.parseInt(textField_3.getText()))+(Integer.parseInt(labFees.getText()))+(Integer.parseInt(textField_5.getText()))+(Integer.parseInt(textField_6.getText()))+(Integer.parseInt(textField_7.getText()))+(Integer.parseInt(textField_8.getText()))+(Integer.parseInt(tutionFees.getText()));
 				textField_10.setText(""+equal);
 			}
 		});
@@ -210,36 +235,69 @@ public class Fees extends JPanel {
 		totalButton.setFocusable(false);
 		panel.add(totalButton);
 		
+		try {
+			Connection connect=Connector.connect();
+			String sql="select status from studentfees where username=? and sem=?";
+			PreparedStatement prepare=connect.prepareStatement(sql);
+			prepare.setString(1, Method.usernameBySerial(serial));
+			prepare.setString(2, Method.currentSem(serial));
+			ResultSet result=prepare.executeQuery();
+			if(result.next()) {
+				if(result.getString(1).equals("paid")) {
+					panel1.setVisible(true);
+				}else {
+					panel.setVisible(true);
+				}
+			}
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
 		JButton payButton = new JButton("PAY");
+		payButton.setBackground(SystemColor.activeCaption);
+		payButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Connection con=Connector.connect();
+					String query="Update studentfees set status=? where username=(select username from student where serial=?) and sem=?";
+					
+					PreparedStatement ps=con.prepareStatement(query);
+					ps.setString(1,"paid");
+					ps.setInt(2,serial);
+//					ps.setString(2,comboBox.getSelectedItem().toString());
+					ps.setString(3,Method.currentSem(serial));
+					ps.executeUpdate();
+										
+					JOptionPane.showMessageDialog(null, "Fees Successfully Paid","Successfull",JOptionPane.INFORMATION_MESSAGE);
+					panel.setVisible(false);
+					panel1.setVisible(true);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		payButton.setBounds(626, 118, 89, 23);
+		payButton.setFocusable(false);
 		panel.add(payButton);
 		
 		
-	}
-
-	private String tutionFees(String s) {
-		if(s.equals("BA(H)")) {
-			return "450";
-		}else if(s.equals("BSC(H)")) {
-			return "660";
-		}else if(s.equals("BSC(G)") ){
-			return "510";
-		}else if(s.equals("BA(G)")) {
-			return "300";
-		}else if(s.equals("BCOM(H)")) {
-			return "510";
-		}else {
-			return "360";
+		try {
+			Connection con =Connector.connect();
+			String q="select lab,tution from fees where department=(select department from student where serial=?)";
+			PreparedStatement ps=con.prepareStatement(q);
+			ps.setInt(1, serial);
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) {
+				labFees.setText(""+rs.getInt(1));
+				tutionFees.setText(""+rs.getInt(2));
+			}
+			con.close();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
 	}
-
-	private String labFees(String string) {
-		if(string.equals("CMSA") ){
-			return "7500";
-		}else if(string.equals("CMSG")){
-			return "2500";
-		}
-		return null;
-	}
-
 }

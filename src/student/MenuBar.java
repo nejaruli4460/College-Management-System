@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+
+import ConnectionPackage.Connector;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
@@ -12,6 +15,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 import Login.LoginPage;
 
 public class MenuBar extends JPanel {
@@ -19,7 +25,9 @@ public class MenuBar extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public MenuBar(String str) {
+	ImageIcon icon;
+	String name;
+	public MenuBar(int serial) {
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setBackground(new Color(0, 204, 153,0));
 		setLayout(null);
@@ -27,36 +35,18 @@ public class MenuBar extends JPanel {
 		
 		setVisible(true);
 		
+		
 		JLabel image = new JLabel("");
-		image.setIcon(new ImageIcon("C:\\Users\\Nejarul\\eclipse-workspace\\College Management System\\asset\\nejarul photo.jpg"));
+		UserFetch.photoFetch(serial,image);
 		image.setBounds(27, 11, 78, 90);
 		add(image);
 		
-		JLabel userName = new JLabel(str);
+		JLabel userName = new JLabel("Student");
 		userName.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 20));
-		userName.setBounds(10, 107, 125, 27);
+		userName.setBounds(27, 104, 78, 27);
 		add(userName);
 		
-		JButton logoutButton = new JButton("Log Out");
-		logoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-				int j=JOptionPane.showConfirmDialog(null, "Are You Sure?","Log out",JOptionPane.YES_NO_OPTION);
-				if(j==0) {
-					StudentMain sm=new StudentMain("exit");
-					sm.setVisible(false);
-					LoginPage lp=new LoginPage();
-					lp.setVisible(true);
-				}
-//				System.out.println(j);
-			}
-		});
-		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		logoutButton.setFocusable(false);
-		logoutButton.setBackground(new Color(64, 224, 208));
-		logoutButton.setBounds(10, 454, 125, 27);
-		add(logoutButton);
-		
+	
 	}
 	public JButton homeButton() {
 		JButton homeButton = new JButton("Home");
@@ -76,7 +66,7 @@ public class MenuBar extends JPanel {
 	}
 	public JButton feeButton() {
 		JButton feeButton = new JButton("Fees Pay");
-		feeButton.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		feeButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		feeButton.setFocusable(false);
 		feeButton.setBackground(new Color(64, 224, 208));
 		feeButton.setBounds(10, 226, 125, 27);
@@ -84,7 +74,7 @@ public class MenuBar extends JPanel {
 		
 	}
 	public JButton recieptButton() {
-		JButton recieptButton = new JButton("Reciept");
+		JButton recieptButton = new JButton("Receipt");
 		recieptButton.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		recieptButton.setFocusable(false);
 		recieptButton.setBackground(new Color(64, 224, 208));
@@ -116,7 +106,7 @@ public JButton profileButton() {
 	return(profileButton);
 	}
 public JButton contactButton() {
-	JButton contactButton = new JButton("Contact Us");
+	JButton contactButton = new JButton("Message Us");
 	contactButton.setFont(new Font("Tahoma", Font.PLAIN, 17));
 	contactButton.setFocusable(false);
 	contactButton.setBackground(new Color(64, 224, 208));

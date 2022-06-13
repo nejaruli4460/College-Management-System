@@ -1,25 +1,32 @@
 package faculty;
 
 import javax.swing.JPanel;
+
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
+import ConnectionPackage.Connector;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.FlowLayout;
-import Method.Method;
+import Method.*;
 
 @SuppressWarnings("serial")
 public class Home extends JPanel {
 	private JLabel notificationIcon;
 	private JLabel lblNotification;
 	private JLabel notificationCount;
-	public Home() {
+	public Home(int serial) {
+		//this is for faculty
 		setBounds(0,0,1301,683);
 		setLayout(null);
 		Method method=new Method();
@@ -39,18 +46,18 @@ public class Home extends JPanel {
 		ImageIcon nImage=new ImageIcon(".\\asset\\notification.png");
 		method.resizeImage(nImage,150,150,notificationIcon);
 		
-		JLabel lblNotification = new JLabel("Unseen Notifaction");
+		JLabel lblNotification = new JLabel("Total Notifaction");
 		lblNotification.setForeground(Color.GRAY);
 		lblNotification.setFont(new Font("Footlight MT Light", Font.BOLD, 20));
 		lblNotification.setBounds(23, 182, 208, 32);
 		notification.add(lblNotification);
 		
-		JLabel notificationCount = new JLabel("0");
+		JLabel notificationCount = new JLabel();
 		notificationCount.setForeground(Color.GRAY);
 		notificationCount.setFont(new Font("Footlight MT Light", Font.BOLD, 30));
 		notificationCount.setBounds(95, 222, 44, 32);
 		notification.add(notificationCount);
-		
+		TotalCount.TotalNotification(notificationCount,serial,"faculty");
 		
 		JPanel faculties = new JPanel();
 		faculties.setBorder(new LineBorder(Color.gray, 3));
@@ -65,12 +72,12 @@ public class Home extends JPanel {
 		ImageIcon fImage=new ImageIcon(".\\asset\\faculty.png");
 		method.resizeImage(fImage,150,150,facultyIcon);
 		
-		JLabel lblFaculty = new JLabel("Total faculties");
+		JLabel lblFaculty = new JLabel("Total Faculty");
 		lblFaculty.setForeground(Color.GRAY);
 		lblFaculty.setFont(new Font("Footlight MT Light", Font.BOLD, 25));
 		lblFaculty.setBounds(23, 182, 208, 32);
 		faculties.add(lblFaculty);
-		JLabel facultyCount = new JLabel("32");
+		JLabel facultyCount = new JLabel(""+TotalCount.TotalFaculty());
 		facultyCount.setForeground(Color.GRAY);
 		facultyCount.setFont(new Font("Footlight MT Light", Font.BOLD, 30));
 		facultyCount.setBounds(95, 222, 44, 32);
@@ -95,7 +102,7 @@ public class Home extends JPanel {
 		lblDepartment.setBounds(23, 182, 208, 32);
 		department.add(lblDepartment);
 		
-		JLabel departmentCount = new JLabel(Method.departmentCount());
+		JLabel departmentCount = new JLabel(""+TotalCount.TotalDepartment());
 		departmentCount.setForeground(Color.GRAY);
 		departmentCount.setFont(new Font("Footlight MT Light", Font.BOLD, 30));
 		departmentCount.setBounds(95, 222, 44, 32);
@@ -120,7 +127,7 @@ public class Home extends JPanel {
 		method.resizeImage(stIcon,150,150,studentIcon);
 		student.add(studentIcon);
 		
-		JLabel totalStudentIcon = new JLabel("17");
+		JLabel totalStudentIcon = new JLabel(""+TotalCount.TotalStudent());
 		totalStudentIcon.setForeground(Color.GRAY);
 		totalStudentIcon.setFont(new Font("Footlight MT Light", Font.BOLD, 30));
 		totalStudentIcon.setBounds(88, 225, 44, 32);
@@ -129,11 +136,31 @@ public class Home extends JPanel {
 		upperBackground.setBounds(0, 0, 1301, 333);
 		add(upperBackground);
 		
-		JLabel welcomeName = new JLabel("Welcome Nejarul Islam");
+		JLabel welcomeName = new JLabel();
 		welcomeName.setForeground(Color.WHITE);
 		welcomeName.setFont(new Font("Consolas", Font.BOLD, 20));
 		welcomeName.setBounds(882, 30, 262, 35);
 		upperBackground.add(welcomeName);
+		
+		JLabel lblNewLabel = new JLabel("Last Login:  "+Method.lastLoginTime(serial, "faculty"));
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setBounds(882, 75, 247, 14);
+		upperBackground.add(lblNewLabel);
+		try {
+			Connection con=Connector.connect();
+			String query="select name from faculty where sl=?";
+			PreparedStatement ps=con.prepareStatement(query);
+			ps.setInt(1, serial);
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) {
+				welcomeName.setText("Welcome "+rs.getString(1));
+			}
+			con.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
 	
 }

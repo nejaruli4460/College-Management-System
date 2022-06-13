@@ -2,9 +2,16 @@ package faculty;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,10 +19,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import ConnectionPackage.Connector;
 import Login.LoginPage;
+import Method.Method;
 
 public class MenuBar extends JPanel {
-	public MenuBar() {
+	public MenuBar(int serial) {
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setBackground(new Color(0, 204, 153,0));
 		setLayout(null);
@@ -25,36 +34,35 @@ public class MenuBar extends JPanel {
 		setVisible(true);
 		
 		JLabel image = new JLabel("");
-		image.setIcon(new ImageIcon("C:\\Users\\Nejarul\\eclipse-workspace\\College Management System\\asset\\nejarul photo.jpg"));
 		image.setBounds(27, 11, 78, 90);
 		add(image);
 		
-		JLabel userName = new JLabel("Nejarul Islam");
+		JLabel userName = new JLabel();
 		userName.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 20));
 		userName.setBounds(10, 107, 125, 27);
 		add(userName);
 		
-		
-		JButton logoutButton = new JButton("Log Out");
-		logoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-				int j=JOptionPane.showConfirmDialog(null, "Are You Sure?","Log out",JOptionPane.YES_NO_OPTION);
-				if(j==0) {
-					FacultyMain sm=new FacultyMain();
-					sm.setVisible(false);
-					LoginPage lp=new LoginPage();
-					lp.setVisible(true);
-				}
-//				System.out.println(j);
+		try {
+			Connection con=Connector.connect();
+			String query="select image,designation from faculty where sl=?";
+			PreparedStatement ps=con.prepareStatement(query);
+			ps.setInt(1, serial);
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) {
+				Method method=new Method();
+				Blob b=rs.getBlob(1);
+				InputStream is=b.getBinaryStream();
+				Image img=ImageIO.read(is);
+				ImageIcon icon=new ImageIcon(img);
+				method.resizeImage(icon, 78, 90, image);
+				userName.setText(rs.getString(2));
 			}
-		});
-		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		logoutButton.setFocusable(false);
-		logoutButton.setBackground(new Color(64, 224, 208));
-		logoutButton.setBounds(10, 517, 125, 27);
-		add(logoutButton);
-		
+			con.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		
 		
@@ -112,7 +120,7 @@ public class MenuBar extends JPanel {
 		return(btnProfile);
 	}
 	public JButton contactButton() {
-		JButton btnContactUs = new JButton("Contact US");
+		JButton btnContactUs = new JButton("Message US");
 		btnContactUs.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		btnContactUs.setFocusable(false);
 		btnContactUs.setBackground(new Color(64, 224, 208));

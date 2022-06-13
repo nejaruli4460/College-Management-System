@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -22,29 +23,25 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import ConnectionPackage.Connector;
+import Method.Method;
+import Method.Validation;
+
+import java.awt.Dialog.ModalityType;
+import java.awt.SystemColor;
 
 public class updateDepartment extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			updateDepartment dialog = new updateDepartment(null,null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 
 	/**
 	 * Create the dialog.
 	 * @param <JDefultTableModel>
 	 */
 	public updateDepartment(JTable table,DefaultTableModel model) {
+		setModalityType(ModalityType.TOOLKIT_MODAL);
+		setModal(true);
 		setTitle("Update Deparment");
 		
 		setBackground(Color.WHITE);
@@ -53,27 +50,35 @@ public class updateDepartment extends JDialog {
 //		setBorder(new LineBorder(Color.gray,3));
 		getContentPane().setLayout(null);
 		
+		JLabel background = new JLabel("");
+		background.setBackground(Color.WHITE);
+		background.setBounds(0, 0, 394, 350);
+		getContentPane().add(background);
+		ImageIcon icon=new ImageIcon(".//asset//uperBack.jpg");
+		Method method=new Method();
+		method.resizeImage(icon, 394, 350, background);
+		
 		JLabel departmentLabel = new JLabel("Department Code");
-		departmentLabel.setForeground(Color.GRAY);
-		departmentLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		departmentLabel.setForeground(Color.WHITE);
+		departmentLabel.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		departmentLabel.setBounds(10, 39, 128, 25);
-		getContentPane().add(departmentLabel);
+		background.add(departmentLabel);
 		
 		JLabel departmentName = new JLabel("Department Name");
-		departmentName.setForeground(Color.GRAY);
-		departmentName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		departmentName.setForeground(Color.WHITE);
+		departmentName.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		departmentName.setBounds(10, 92, 128, 25);
-		getContentPane().add(departmentName);
+		background.add(departmentName);
 		
 		JTextArea dname = new JTextArea();
 		dname.setFont(new Font("Monospaced", Font.PLAIN, 15));
-		dname.setBackground(Color.LIGHT_GRAY);
+		dname.setBackground(Color.WHITE);
 		dname.setBounds(148, 93, 199, 25);
 //		dname.setText(dn);
-		getContentPane().add(dname);
+		background.add(dname);
 		
 		JTextArea dcode = new JTextArea();
-		dcode.setEditable(false);
+//		dcode.setEditable(false);
 //		dcode.setText(dc);
 		dcode.addKeyListener(new KeyAdapter() {
 			@Override
@@ -83,9 +88,9 @@ public class updateDepartment extends JDialog {
 		});
 		dcode.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		dcode.setTabSize(9);
-		dcode.setBackground(Color.LIGHT_GRAY);
+		dcode.setBackground(Color.WHITE);
 		dcode.setBounds(148, 40, 199, 25);
-		getContentPane().add(dcode);
+		background.add(dcode);
 		dcode.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -94,17 +99,17 @@ public class updateDepartment extends JDialog {
 		});
 		
 		JLabel lblDepartmentType = new JLabel("Department Type");
-		lblDepartmentType.setForeground(Color.GRAY);
-		lblDepartmentType.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblDepartmentType.setForeground(Color.WHITE);
+		lblDepartmentType.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblDepartmentType.setBounds(10, 148, 128, 25);
-		getContentPane().add(lblDepartmentType);
+		background.add(lblDepartmentType);
 		
 		JTextArea typeArea = new JTextArea();
 		typeArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
 //		typeArea.setText(dt);
-		typeArea.setBackground(Color.LIGHT_GRAY);
+		typeArea.setBackground(Color.WHITE);
 		typeArea.setBounds(148, 149, 199, 25);
-		getContentPane().add(typeArea);
+		background.add(typeArea);
 		typeArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -113,16 +118,16 @@ public class updateDepartment extends JDialog {
 		});
 		
 		JLabel Seat = new JLabel("Number of Seat");
-		Seat.setForeground(Color.GRAY);
-		Seat.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		Seat.setForeground(Color.WHITE);
+		Seat.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		Seat.setBounds(10, 203, 128, 25);
 //		Seat.setText(st);
-		getContentPane().add(Seat);
+		background.add(Seat);
 		JTextArea seatArea = new JTextArea();
 		seatArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
-		seatArea.setBackground(Color.LIGHT_GRAY);
+		seatArea.setBackground(Color.WHITE);
 		seatArea.setBounds(148, 204, 199, 25);
-		getContentPane().add(seatArea);
+		background.add(seatArea);
 		seatArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -130,13 +135,13 @@ public class updateDepartment extends JDialog {
 			}
 		});
 		JButton updateButton = new JButton("UPDATE");
+		updateButton.setBackground(SystemColor.activeCaption);
 		if(table!=null||model!=null) {
 			int rowIndex=table.getSelectedRow();
 			String dc=model.getValueAt(rowIndex, 1).toString();
 			String dn=model.getValueAt(rowIndex, 2).toString();
 			String dt=model.getValueAt(rowIndex, 3).toString();
 			String st=model.getValueAt(rowIndex, 4).toString();
-				System.out.println(dc+dn+dt+st);
 				seatArea.setText(st);
 				typeArea.setText(dt);
 				dcode.setText(dc);
@@ -144,8 +149,8 @@ public class updateDepartment extends JDialog {
 		}
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(dcode.getText().isEmpty()||dname.getText().isEmpty()||typeArea.getText().isEmpty()||seatArea.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Please fill all the field..","Error",JOptionPane.ERROR_MESSAGE);
+				if(Validation.departmentValid(dcode.getText(),dname.getText(),seatArea.getText())==false) {
+					
 				}
 				else {
 				try {
@@ -160,7 +165,7 @@ public class updateDepartment extends JDialog {
 					ps.executeUpdate();
 					con.close();
 					setVisible(false);
-					JOptionPane.showMessageDialog(null,"Inserted Successfully");
+					JOptionPane.showMessageDialog(null,"Updated Successfully");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"Updation not done",JOptionPane.ERROR_MESSAGE);
@@ -175,9 +180,10 @@ public class updateDepartment extends JDialog {
 			}
 		});
 		updateButton.setBounds(74, 277, 89, 23);
-		getContentPane().add(updateButton);
+		background.add(updateButton);
 		
 		JButton resetButton = new JButton("RESET");
+		resetButton.setBackground(SystemColor.activeCaption);
 		resetButton.setFocusable(false);
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -188,7 +194,7 @@ public class updateDepartment extends JDialog {
 			}
 		});
 		resetButton.setBounds(208, 277, 89, 23);
-		getContentPane().add(resetButton);
+		background.add(resetButton);
 		
 		
 

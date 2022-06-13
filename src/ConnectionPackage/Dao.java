@@ -20,7 +20,7 @@ public class Dao {
 
 		while(demo.next()) {
 			if(user.equalsIgnoreCase(demo.getString(9)) && pass.equals(demo.getString(7))) {
-				flag=demo.getString(2);
+				flag=demo.getString(9);
 			}
 		}
 		}catch(Exception e) {
